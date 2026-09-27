@@ -324,6 +324,21 @@
     .submit-btn { border: 1px solid #fff; background: #fff; color: var(--accent); padding: 14px 19px; font: 700 14px var(--display); cursor: pointer; transition: background-color .2s ease, color .2s ease; }
     .submit-btn:hover, .submit-btn:focus-visible { background: transparent; color: #fff; }
     .form-status { min-height: 22px; font-size: 13px; color: rgba(255,255,255,.9); }
+    .email-link-copy { position: relative; }
+    .email-copy-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+    .draft-panel { grid-column: 1 / -1; border-top: 1px solid rgba(255,255,255,.48); padding-top: 24px; margin-top: 4px; }
+    .draft-panel[hidden] { display: none; }
+    .draft-panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 22px; margin-bottom: 20px; }
+    .draft-panel h3 { font-size: 24px; letter-spacing: -.035em; }
+    .draft-note { margin: 7px 0 0; color: rgba(255,255,255,.84); font-size: 14px; max-width: 620px; }
+    .copy-draft-btn { flex: 0 0 auto; border: 1px solid #fff; background: transparent; color: #fff; padding: 11px 15px; font: 700 13px var(--display); cursor: pointer; transition: background-color .2s ease, color .2s ease; }
+    .copy-draft-btn:hover, .copy-draft-btn:focus-visible { background: #fff; color: var(--accent); }
+    .draft-fields { border: 1px solid rgba(255,255,255,.42); background: rgba(255,255,255,.09); }
+    .draft-row { display: grid; grid-template-columns: 90px 1fr; gap: 18px; padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,.28); }
+    .draft-row:last-child { border-bottom: 0; }
+    .draft-row strong { font: 700 12px var(--display); text-transform: uppercase; letter-spacing: .06em; }
+    .draft-row span { min-width: 0; overflow-wrap: anywhere; }
+    .draft-body { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font: 500 14px/1.55 var(--body); color: rgba(255,255,255,.92); }
 
     .cursor-dot, .cursor-ring { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 90; border-radius: 50%; opacity: 0; }
     .cursor-dot { width: 6px; height: 6px; background: var(--accent); }
@@ -394,7 +409,10 @@
       .contact-grid { gap: 54px; }
       .contact-form { grid-template-columns: 1fr; }
       .field-wide { grid-column: auto; }
-      .form-actions { grid-column: auto; }
+      .form-actions, .draft-panel { grid-column: auto; }
+      .draft-panel-head { flex-direction: column; }
+      .draft-row { grid-template-columns: 1fr; gap: 5px; }
+      .copy-draft-btn { width: 100%; }
       .cursor-dot, .cursor-ring { display: none; }
     }
     @media (max-width: 470px) {
@@ -666,7 +684,7 @@
           </div>
           <div class="faq-item">
             <button class="faq-question" type="button" aria-expanded="false"><span>What is the best way to start working together?</span><span class="faq-icon" aria-hidden="true"></span></button>
-            <div class="faq-answer"><div><p>Share the situation, the outcome you want, and any important constraints in the form below. Your email client will open with a structured draft ready for you to review and send.</p></div></div>
+            <div class="faq-answer"><div><p>Share the situation, the outcome you want, and any important constraints in the form below. We will try to open your email app and also show a structured draft you can copy and send from any email app.</p></div></div>
           </div>
         </div>
       </div>
@@ -680,8 +698,9 @@
             <h2>Bring us the difficult part.</h2>
             <div class="contact-aside">
               <p>Have a product to shape, software to build, or a system that needs a clearer future? Tell us enough to make the first conversation useful.</p>
-              <a class="text-link" href="mailto:contact@vertonow.in">contact@vertonow.in
+              <a class="text-link email-link-copy" id="email-link" href="mailto:contact@vertonow.in"><span id="email-link-label">contact@vertonow.in</span>
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4 14 14 4M6 4h8v8" stroke="currentColor" stroke-width="1.8"/></svg>
+                <span class="email-copy-status" id="email-copy-status" aria-live="polite"></span>
               </a>
             </div>
           </div>
@@ -717,6 +736,20 @@
               <button class="submit-btn" type="submit">Open email draft</button>
               <span class="form-status" id="form-status" aria-live="polite">Nothing is sent until you send it from your email app.</span>
             </div>
+            <section class="draft-panel" id="draft-panel" aria-labelledby="draft-panel-title" tabindex="-1" hidden>
+              <div class="draft-panel-head">
+                <div>
+                  <h3 id="draft-panel-title">Your email draft is ready</h3>
+                  <p class="draft-note">If your email app did not open automatically, copy this draft, paste it into any email app, and send it to contact@vertonow.in.</p>
+                </div>
+                <button class="copy-draft-btn" id="copy-draft" type="button">Copy draft</button>
+              </div>
+              <div class="draft-fields">
+                <div class="draft-row"><strong>To</strong><span id="draft-to">contact@vertonow.in</span></div>
+                <div class="draft-row"><strong>Subject</strong><span id="draft-subject"></span></div>
+                <div class="draft-row"><strong>Message</strong><pre class="draft-body" id="draft-body"></pre></div>
+              </div>
+            </section>
           </form>
         </div>
         <footer class="footer">
@@ -823,6 +856,55 @@
 
       var form = document.getElementById('contact-form');
       var status = document.getElementById('form-status');
+      var draftPanel = document.getElementById('draft-panel');
+      var draftSubject = document.getElementById('draft-subject');
+      var draftBody = document.getElementById('draft-body');
+      var copyDraftButton = document.getElementById('copy-draft');
+      var composedDraftText = '';
+
+      function fallbackCopy(text) {
+        var textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        textarea.style.top = '0';
+        textarea.style.fontSize = '16px';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        textarea.setSelectionRange(0, textarea.value.length);
+        var copied = false;
+        try { copied = document.execCommand('copy'); } catch (error) { copied = false; }
+        document.body.removeChild(textarea);
+        return copied;
+      }
+
+      function copyText(text) {
+        if (fallbackCopy(text)) return Promise.resolve();
+        if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+        return Promise.reject(new Error('Clipboard is unavailable'));
+      }
+
+      var emailLink = document.getElementById('email-link');
+      var emailLinkLabel = document.getElementById('email-link-label');
+      var emailCopyStatus = document.getElementById('email-copy-status');
+      var emailResetTimer;
+      emailLink.addEventListener('click', function () {
+        copyText('contact@vertonow.in').then(function () {
+          clearTimeout(emailResetTimer);
+          emailLinkLabel.textContent = 'Copied';
+          emailCopyStatus.textContent = 'Email address copied to clipboard.';
+          emailResetTimer = setTimeout(function () {
+            emailLinkLabel.textContent = 'contact@vertonow.in';
+            emailCopyStatus.textContent = '';
+          }, 2000);
+        }).catch(function () {
+          emailLinkLabel.textContent = 'contact@vertonow.in';
+          emailCopyStatus.textContent = 'Copy was unavailable. Opening your email app.';
+        });
+      });
+
       function setError(id, message) {
         var field = document.getElementById(id);
         var error = document.getElementById(id + '-error');
@@ -835,6 +917,15 @@
       form.querySelectorAll('input, textarea, select').forEach(function (field) {
         field.addEventListener('input', function () { setError(field.id, ''); });
         field.addEventListener('change', function () { setError(field.id, ''); });
+      });
+      copyDraftButton.addEventListener('click', function () {
+        copyText(composedDraftText).then(function () {
+          copyDraftButton.textContent = 'Copied';
+          status.textContent = 'Draft copied. Paste it into any email app to send.';
+          setTimeout(function () { copyDraftButton.textContent = 'Copy draft'; }, 2000);
+        }).catch(function () {
+          status.textContent = 'Copy is unavailable here. Select the draft text below and copy it manually.';
+        });
       });
       form.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -866,8 +957,17 @@
           '',
           'I would like to discuss the next steps.'
         ].join('\r\n');
-        status.textContent = 'Opening a prepared draft in your email app…';
-        window.location.href = 'mailto:contact@vertonow.in?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+        composedDraftText = 'To: contact@vertonow.in\r\nSubject: ' + subject + '\r\n\r\n' + body;
+        draftSubject.textContent = subject;
+        draftBody.textContent = body;
+        draftPanel.hidden = false;
+        status.textContent = 'Draft ready below. Trying to open your email app…';
+        var mailLink = document.createElement('a');
+        mailLink.href = 'mailto:contact@vertonow.in?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+        mailLink.style.display = 'none';
+        document.body.appendChild(mailLink);
+        mailLink.click();
+        document.body.removeChild(mailLink);
       });
 
       var canvas = document.querySelector('.hero-particles');
