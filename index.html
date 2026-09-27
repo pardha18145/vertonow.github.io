@@ -91,11 +91,9 @@
       right: 0;
       z-index: 60;
       pointer-events: none;
-      transform: translateY(calc(-100% - 24px));
-      opacity: 0;
-      transition: transform .35s cubic-bezier(.22, 1, .36, 1), opacity .25s ease;
+      transform: translateY(0);
+      opacity: 1;
     }
-    .mini-nav.visible { transform: translateY(0); opacity: 1; }
     .mini-nav-inner {
       min-height: 54px;
       display: grid;
@@ -529,7 +527,17 @@
       padding-top: 110px;
       padding-bottom: 78px;
     }
-    .hero-content { max-width: 1080px; }
+    .hero-content {
+      max-width: 1080px;
+      transform: none;
+      rotate: 0deg;
+    }
+    .hero-content h1,
+    .hero-subrow,
+    .hero-subrow p {
+      transform: none;
+      rotate: 0deg;
+    }
     h1 {
       max-width: 1010px;
       color: var(--ink);
@@ -571,7 +579,13 @@
     @media (prefers-color-scheme: dark) { .clients { background: var(--accent-soft); color: var(--ink); } }
     .clients h2 { font-weight: 600; }
     .client-grid { border-color: var(--line); }
-    .client-name { min-height: 118px; border-color: var(--line); background: color-mix(in srgb, var(--surface) 56%, transparent); }
+    .client-name {
+      min-height: 118px;
+      border-color: var(--line);
+      background: color-mix(in srgb, var(--surface) 56%, transparent);
+      transition: background-color .25s ease;
+    }
+    .client-name:is(:hover, :active, :focus-visible, .is-active) { background: #edf0f7; }
     .client-name > svg.client-logo,
     .client-name > img.client-logo { filter: grayscale(1); opacity: .7; }
 
@@ -1605,7 +1619,6 @@
         var y = window.scrollY || document.documentElement.scrollTop;
         var max = document.documentElement.scrollHeight - window.innerHeight;
         var overHero = y < hero.offsetHeight - 76;
-        nav.classList.toggle('visible', y > 32);
         nav.classList.toggle('on-hero', overHero);
         progress.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
       }
