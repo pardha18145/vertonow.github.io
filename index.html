@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="description" content="VertoNow is a Canadian digital engineering studio for ambitious products, dependable software, and clear technical direction." />
+  <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <title>VertoNow — Digital engineering, made useful</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f3f4ef;
+      --surface: #ffffff;
+      --surface-2: #e8eae3;
+      --ink: #101513;
+      --muted: #52605a;
+      --line: #cbd0c8;
+      --accent: #e84d2a;
+      --accent-soft: #ffd9cf;
+      --signal: #0e7768;
+      --nav-bg: rgba(243, 244, 239, .88);
+      --shadow: 0 28px 80px rgba(24, 35, 30, .12);
+      --display: "Manrope", sans-serif;
+      --body: "DM Sans", sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0d1110;
+        --surface: #151b19;
+        --surface-2: #1d2522;
+        --ink: #f0f3ed;
+        --muted: #a9b4ae;
+        --line: #33403a;
+        --accent: #ff7658;
+        --accent-soft: #49251e;
+        --signal: #58c7b6;
+        --nav-bg: rgba(13, 17, 16, .88);
+        --shadow: 0 28px 80px rgba(0, 0, 0, .34);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.55;
+      overflow-x: hidden;
+      text-rendering: optimizeLegibility;
+    }
+    a { color: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    ::selection { background: var(--accent); color: #fff; }
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .025;
+      z-index: 20;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+    }
+    .wrap { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
+    .progress { position: fixed; top: 0; left: 0; width: 0; height: 3px; z-index: 60; background: var(--accent); }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--nav-bg);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid transparent;
+      transition: border-color .2s ease;
+    }
+    nav.scrolled { border-color: var(--line); }
+    .nav-inner {
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .mark {
+      width: 43px;
+      height: 43px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--ink);
+      border-radius: 50%;
+      text-decoration: none;
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: -.05em;
+    }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a {
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted);
+      transition: color .2s ease;
+    }
+    .nav-links a:hover, .nav-links a:focus-visible { color: var(--ink); }
+    .nav-cta { color: var(--ink) !important; border-bottom: 1px solid var(--accent); padding-bottom: 3px; }
+    .menu-btn {
+      display: none;
+      border: 0;
+      background: none;
+      color: var(--ink);
+      font: 600 14px var(--body);
+      padding: 10px 0 10px 14px;
+    }
+    header {
+      min-height: calc(100vh - 74px);
+      display: grid;
+      align-items: center;
+      padding: 80px 0 68px;
+      position: relative;
+    }
+    .hero-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: clamp(52px, 8vw, 124px); align-items: end; }
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+    .eyebrow::before { content: ""; width: 28px; height: 2px; background: var(--accent); }
+    h1, h2, h3 { font-family: var(--display); letter-spacing: -.055em; margin: 0; }
+    h1 {
+      font-size: clamp(62px, 9vw, 126px);
+      line-height: .87;
+      font-weight: 700;
+      max-width: 850px;
+    }
+    h1 .turn { display: block; color: var(--accent); margin-left: clamp(28px, 10vw, 154px); }
+    .hero-aside { padding-bottom: 10px; }
+    .hero-aside p { font-size: clamp(20px, 2.2vw, 27px); line-height: 1.35; letter-spacing: -.025em; margin: 0 0 34px; }
+    .text-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 15px;
+      border-bottom: 1px solid var(--ink);
+      padding-bottom: 7px;
+    }
+    .text-link svg { transition: transform .2s ease; }
+    .text-link:hover svg { transform: translate(3px, -3px); }
+    .hero-foot {
+      margin-top: clamp(72px, 10vh, 130px);
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    section { padding: clamp(90px, 12vw, 165px) 0; }
+    .signal { background: var(--ink); color: var(--bg); overflow: hidden; }
+    @media (prefers-color-scheme: dark) { .signal { background: #eef1eb; color: #111513; } }
+    .signal-grid { display: grid; grid-template-columns: .78fr 1.22fr; gap: clamp(56px, 9vw, 140px); align-items: center; }
+    .section-index { font: 600 12px var(--display); letter-spacing: .1em; color: var(--accent); margin-bottom: 26px; }
+    .signal h2, .section-head h2, .contact h2 { font-size: clamp(43px, 6vw, 76px); line-height: .98; }
+    .signal-copy > p { color: color-mix(in srgb, currentColor 68%, transparent); font-size: 19px; max-width: 470px; margin: 28px 0 0; }
+    .system {
+      aspect-ratio: 1;
+      max-width: 520px;
+      margin-left: auto;
+      position: relative;
+      display: grid;
+      place-items: center;
+    }
+    .orbit {
+      position: absolute;
+      border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+      border-radius: 50%;
+    }
+    .orbit.o1 { inset: 8%; }
+    .orbit.o2 { inset: 25%; border-style: dashed; animation: spin 26s linear infinite; }
+    .orbit.o3 { inset: 40%; background: var(--accent); border: 0; box-shadow: 0 0 0 13px color-mix(in srgb, var(--accent) 16%, transparent); }
+    .node {
+      position: absolute;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .node::after {
+      content: attr(data-label);
+      position: absolute;
+      white-space: nowrap;
+      font: 600 12px var(--body);
+      color: currentColor;
+      opacity: .78;
+    }
+    .n1 { top: 11%; left: 46%; } .n1::after { top: -29px; left: 50%; transform: translateX(-50%); }
+    .n2 { right: 8%; top: 48%; } .n2::after { left: 24px; top: -5px; }
+    .n3 { bottom: 10%; left: 45%; } .n3::after { bottom: -29px; left: 50%; transform: translateX(-50%); }
+    .n4 { left: 8%; top: 48%; } .n4::after { right: 24px; top: -5px; }
+    .pulse-ring { position: absolute; inset: 40%; border-radius: 50%; border: 1px solid var(--accent); animation: pulse 2.8s ease-out infinite; }
+    .system-label { position: relative; z-index: 2; color: #fff; font-family: var(--display); font-weight: 800; font-size: 12px; }
+    .services { border-bottom: 1px solid var(--line); }
+    .section-head { display: grid; grid-template-columns: .75fr 1.25fr; gap: 60px; margin-bottom: 80px; }
+    .section-head p { color: var(--muted); font-size: 20px; max-width: 540px; margin: 6px 0 0 auto; }
+    .service-list { border-top: 1px solid var(--line); }
+    .service {
+      display: grid;
+      grid-template-columns: 90px .85fr 1.15fr;
+      gap: 24px;
+      align-items: start;
+      padding: 38px 0 42px;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+    }
+    .service::before { content: ""; position: absolute; left: 0; bottom: -1px; height: 2px; width: 0; background: var(--accent); transition: width .45s ease; }
+    .service:hover::before { width: 100%; }
+    .service-num { color: var(--accent); font: 700 13px var(--display); }
+    .service h3 { font-size: clamp(27px, 3vw, 40px); line-height: 1.05; }
+    .service-desc p { color: var(--muted); margin: 3px 0 18px; max-width: 560px; font-size: 17px; }
+    .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tag { border: 1px solid var(--line); border-radius: 999px; padding: 6px 11px; font-size: 12px; font-weight: 600; color: var(--muted); }
+    .method { padding-top: clamp(90px, 11vw, 150px); }
+    .method-top { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: end; margin-bottom: 72px; }
+    .method-top h2 { font-size: clamp(45px, 6.5vw, 82px); line-height: .95; }
+    .method-top p { margin: 0; color: var(--muted); font-size: 19px; max-width: 500px; }
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); }
+    .step { padding: 24px 26px 36px 0; position: relative; }
+    .step::before { content: ""; position: absolute; width: 7px; height: 7px; background: var(--accent); border-radius: 50%; top: -4px; left: 0; }
+    .step:not(:last-child) { border-right: 1px solid var(--line); margin-right: 26px; }
+    .step span { font: 700 12px var(--display); color: var(--accent); }
+    .step h3 { font-size: 22px; margin: 30px 0 10px; letter-spacing: -.035em; }
+    .step p { color: var(--muted); font-size: 14px; margin: 0; }
+    .principles { padding-top: 25px; }
+    .principles-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 90px; padding: 75px 0; border-top: 1px solid var(--line); }
+    .principles h2 { font-size: clamp(36px, 4.5vw, 59px); line-height: 1.03; }
+    .principle-list { margin: 0; padding: 0; list-style: none; }
+    .principle-list li { display: grid; grid-template-columns: 36px 1fr; gap: 16px; align-items: start; padding: 18px 0; border-bottom: 1px solid var(--line); font-size: 18px; }
+    .principle-list li:first-child { padding-top: 0; }
+    .check { color: var(--signal); font-weight: 800; }
+    .contact { background: var(--accent); color: #fff; padding: clamp(88px, 12vw, 155px) 0 36px; }
+    .contact-grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 70px; align-items: end; }
+    .contact h2 { max-width: 760px; }
+    .contact-aside p { font-size: 18px; margin: 0 0 30px; color: rgba(255,255,255,.8); }
+    .contact .text-link { border-color: #fff; font-size: 17px; }
+    .footer {
+      margin-top: clamp(90px, 13vw, 150px);
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,.35);
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      font-size: 13px;
+      color: rgba(255,255,255,.72);
+    }
+    .reveal { opacity: 1; transform: none; }
+    .js .reveal { opacity: 0; transform: translateY(20px); transition: opacity .7s ease, transform .7s ease; }
+    .js .reveal.visible { opacity: 1; transform: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulse { 0% { transform: scale(.65); opacity: .9; } 100% { transform: scale(3.4); opacity: 0; } }
+    @media (max-width: 800px) {
+      .wrap { width: min(100% - 34px, 640px); }
+      nav { position: sticky; }
+      .nav-inner { min-height: 66px; }
+      .menu-btn { display: block; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 66px;
+        left: 0;
+        right: 0;
+        background: var(--bg);
+        border-bottom: 1px solid var(--line);
+        padding: 18px 17px 26px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+      }
+      .nav-links.open { display: flex; }
+      header { min-height: auto; padding: 72px 0 40px; }
+      .hero-grid, .signal-grid, .section-head, .method-top, .principles-grid, .contact-grid { grid-template-columns: 1fr; }
+      .hero-grid { gap: 44px; }
+      h1 { font-size: clamp(58px, 19vw, 88px); }
+      h1 .turn { margin-left: 9vw; }
+      .hero-aside { max-width: 480px; }
+      .hero-foot { margin-top: 72px; }
+      .signal-grid { gap: 70px; }
+      .system { margin: 0 auto; width: min(88vw, 440px); }
+      .section-head { gap: 26px; margin-bottom: 54px; }
+      .section-head p { margin-left: 0; }
+      .service { grid-template-columns: 48px 1fr; gap: 14px; }
+      .service-desc { grid-column: 2; }
+      .method-top { gap: 26px; }
+      .steps { grid-template-columns: 1fr 1fr; border-top: 0; }
+      .step { border-top: 1px solid var(--line); }
+      .step:not(:last-child) { border-right: 0; margin-right: 0; }
+      .step:nth-child(odd) { margin-right: 20px; }
+      .principles-grid { gap: 42px; }
+      .contact-grid { gap: 44px; }
+    }
+    @media (max-width: 470px) {
+      .hero-foot { align-items: flex-end; }
+      .hero-foot span:last-child { text-align: right; max-width: 130px; }
+      .steps { grid-template-columns: 1fr; }
+      .step:nth-child(odd) { margin-right: 0; }
+      .service { grid-template-columns: 36px 1fr; }
+      .node::after { font-size: 10px; }
+      .n2::after { left: auto; right: 22px; top: 15px; }
+      .n4::after { right: auto; left: 22px; top: 15px; }
+      .footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+
+  <nav aria-label="Primary navigation">
+    <div class="wrap nav-inner">
+      <span aria-hidden="true"></span>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
+      <div class="nav-links" id="nav-links">
+        <a href="#capabilities">Capabilities</a>
+        <a href="#approach">Approach</a>
+        <a href="#principles">Principles</a>
+        <a class="nav-cta" href="#contact">Start a conversation</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="top">
+    <header>
+      <div class="wrap">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow">Canadian digital engineering studio</div>
+            <h1>Clarity,<span class="turn">built.</span></h1>
+          </div>
+          <div class="hero-aside">
+            <p>We turn ambitious ideas into dependable digital products — with sharp thinking, thoughtful engineering, and no wasted motion.</p>
+            <a class="text-link" href="#capabilities">Explore what we do
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4 14 14 4M6 4h8v8" stroke="currentColor" stroke-width="1.8"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="hero-foot">
+          <span>VertoNow Inc.</span>
+          <span>Strategy · Software · Modernization</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="signal">
+      <div class="wrap signal-grid">
+        <div class="signal-copy reveal">
+          <div class="section-index">01 / THE SIGNAL</div>
+          <h2>Technology should make the next move obvious.</h2>
+          <p>We connect business intent to technical reality, replacing noise with a focused path from idea to launch — and beyond.</p>
+        </div>
+        <div class="system reveal" aria-label="A visual model connecting intent, design, build and value">
+          <div class="orbit o1"></div>
+          <div class="orbit o2"></div>
+          <div class="orbit o3"></div>
+          <div class="pulse-ring"></div>
+          <div class="system-label">VALUE</div>
+          <span class="node n1" data-label="INTENT"></span>
+          <span class="node n2" data-label="DESIGN"></span>
+          <span class="node n3" data-label="BUILD"></span>
+          <span class="node n4" data-label="LEARN"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="services" id="capabilities">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div>
+            <div class="section-index">02 / CAPABILITIES</div>
+            <h2>From first thought to lasting system.</h2>
+          </div>
+          <p>One practical partner across the moments that matter most: choosing the right problem, shipping the right solution, and strengthening what comes next.</p>
+        </div>
+        <div class="service-list">
+          <article class="service reveal">
+            <div class="service-num">01</div>
+            <h3>Product direction</h3>
+            <div class="service-desc">
+              <p>Frame the opportunity, reduce uncertainty, and define a path people can act on.</p>
+              <div class="tags"><span class="tag">Discovery</span><span class="tag">Product strategy</span><span class="tag">Technical planning</span></div>
+            </div>
+          </article>
+          <article class="service reveal">
+            <div class="service-num">02</div>
+            <h3>Software engineering</h3>
+            <div class="service-desc">
+              <p>Build resilient digital products with disciplined full-stack execution and a bias toward usefulness.</p>
+              <div class="tags"><span class="tag">Web applications</span><span class="tag">Platforms</span><span class="tag">Integrations</span></div>
+            </div>
+          </article>
+          <article class="service reveal">
+            <div class="service-num">03</div>
+            <h3>Modernization</h3>
+            <div class="service-desc">
+              <p>Untangle aging systems, improve delivery, and create a technical foundation ready for change.</p>
+              <div class="tags"><span class="tag">Architecture</span><span class="tag">Cloud</span><span class="tag">Delivery systems</span></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="method" id="approach">
+      <div class="wrap">
+        <div class="method-top reveal">
+          <div>
+            <div class="section-index">03 / APPROACH</div>
+            <h2>Momentum without the theatre.</h2>
+          </div>
+          <p>A compact, transparent way of working that keeps decisions close to evidence and progress visible from day one.</p>
+        </div>
+        <div class="steps">
+          <article class="step reveal"><span>01</span><h3>Frame</h3><p>Align on the outcome, constraints, and the questions worth answering.</p></article>
+          <article class="step reveal"><span>02</span><h3>Shape</h3><p>Turn ambiguity into a clear product and technical direction.</p></article>
+          <article class="step reveal"><span>03</span><h3>Make</h3><p>Build in small, useful increments with quality visible throughout.</p></article>
+          <article class="step reveal"><span>04</span><h3>Evolve</h3><p>Learn from reality, strengthen the system, and choose the next move.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="principles" id="principles">
+      <div class="wrap principles-grid reveal">
+        <div>
+          <div class="section-index">04 / WHAT HOLDS</div>
+          <h2>Good work is as much about how as what.</h2>
+        </div>
+        <ul class="principle-list">
+          <li><span class="check">↳</span><span>Useful outcomes before impressive output.</span></li>
+          <li><span class="check">↳</span><span>Plain language before technical theatre.</span></li>
+          <li><span class="check">↳</span><span>Small, testable decisions before giant bets.</span></li>
+          <li><span class="check">↳</span><span>Systems built to change, not merely to launch.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="wrap">
+        <div class="contact-grid reveal">
+          <h2>Bring us the difficult part.</h2>
+          <div class="contact-aside">
+            <p>Have a product to shape, software to build, or a system that needs a clearer future?</p>
+            <a class="text-link" href="mailto:contact@vertonow.in">contact@vertonow.in
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4 14 14 4M6 4h8v8" stroke="currentColor" stroke-width="1.8"/></svg>
+            </a>
+          </div>
+        </div>
+        <footer class="footer">
+          <span>© <span id="year">2026</span> VertoNow Inc.</span>
+          <span>Ontario, Canada</span>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var nav = document.querySelector('nav');
+      var progress = document.querySelector('.progress');
+      var menuButton = document.querySelector('.menu-btn');
+      var links = document.querySelector('.nav-links');
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      function updateScroll() {
+        var y = window.scrollY || document.documentElement.scrollTop;
+        var max = document.documentElement.scrollHeight - window.innerHeight;
+        nav.classList.toggle('scrolled', y > 8);
+        progress.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
+      }
+      window.addEventListener('scroll', updateScroll, { passive: true });
+      updateScroll();
+
+      menuButton.addEventListener('click', function () {
+        var open = links.classList.toggle('open');
+        menuButton.setAttribute('aria-expanded', String(open));
+        menuButton.textContent = open ? 'Close' : 'Menu';
+      });
+      links.addEventListener('click', function (event) {
+        if (event.target.closest('a')) {
+          links.classList.remove('open');
+          menuButton.setAttribute('aria-expanded', 'false');
+          menuButton.textContent = 'Menu';
+        }
+      });
+
+      if (reduceMotion || !('IntersectionObserver' in window)) {
+        document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('visible'); });
+      } else {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('.reveal').forEach(function (el) { observer.observe(el); });
+      }
+    }());
+  </script>
+</body>
+</html>
